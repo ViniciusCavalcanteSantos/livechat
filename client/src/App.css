@@ -1,0 +1,33 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;700&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body, div#root, div#root > .App {
+  height: 100%;
+}
+
+body {
+  font-family: 'Montserrat', sans-serif;
+}
+
+:root {
+  --primary: #2148C0;
+
+  --white: #fff;
+  --black: #000;
+}
+
+.background-fullscreen {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: var(--primary) url("./assets/bg-entrar.svg") no-repeat;
+  background-size: cover;
+  overflow: hidden;
+}
