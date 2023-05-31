@@ -1,14 +1,16 @@
-import {useState} from "react";
+import {useContext, useEffect, useState} from "react";
 import {Link, useNavigate} from "react-router-dom";
 import {toast} from 'react-toastify';
-
-import {socket} from "../helpers/socket";
 
 import "./Entrar.css"
 import user from "../assets/user.svg";
 import lock from "../assets/lock.svg";
+import GlobalContext from "../helpers/globalContext";
+import axios from "axios";
+import {isAuthorized} from "../helpers/socket";
 
 export const Cadastrar = () => {
+    const context = useContext(GlobalContext);
     const navigate = useNavigate();
 
     const [username, setUsername] = useState("");
@@ -25,14 +27,14 @@ export const Cadastrar = () => {
             toast("Suas senhas não coincidem!");
         }
 
-        socket.connect();
-        socket.emit("criar-conta", {username, senha}, ({status, message}) => {
-            toast(message);
+        axios.post("http://localhost:4000/cadastrar", {username, senha})
+            .then((res) => {
+                toast(res.data.message);
 
-            if(status) {
-                navigate("/", {state: {username}});
-            }
-        })
+                if(res.data.status) {
+                    navigate("/", {state: {username}});
+                }
+            })
     }
 
     return (

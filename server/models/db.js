@@ -6,6 +6,8 @@ async function connect() {
     const connection = await mysql.createConnection({
         host: 'localhost',
         user: 'root',
+        port: 3306,
+        password: '',
         database: 'livechat'
     });
 

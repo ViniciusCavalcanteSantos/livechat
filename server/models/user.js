@@ -8,12 +8,12 @@ const bcrypt = require("bcrypt");
  * @param next
  */
 function requireAuthentication(socket, next) {
-    if(socket.event === "entrar" || socket.event === "criar-conta") {
+    if(socket.event === "entrar" || socket.event === "criar-conta" || socket.event === "isAuthorized") {
         next();
     } else if(socket.request.session.authenticated) {
         next();
     } else {
-        socket.emit("desautorizado");
+        socket.emit("unauthorized");
         socket.disconnect();
     }
 }

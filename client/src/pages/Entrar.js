@@ -1,13 +1,16 @@
-import {useEffect, useState} from "react";
+import {useContext, useEffect, useState} from "react";
 import {Link, useLocation, useNavigate} from "react-router-dom";
 
 import "./Entrar.css"
 import user from "../assets/user.svg";
 import lock from "../assets/lock.svg";
-import {socket} from "../helpers/socket";
 import {toast} from "react-toastify";
+import GlobalContext from "../helpers/globalContext";
+import axios from "axios";
+import {socket} from "../helpers/socket";
 
 export const Entrar = () => {
+    const context = useContext(GlobalContext);
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -23,19 +26,19 @@ export const Entrar = () => {
 
     const handleUsername = (e) => setUsername(e.target.value);
     const handleSenha = (e) => setSenha(e.target.value);
-
     const handleSubmit = (e) => {
         e.preventDefault();
         if(!username || !senha) alert("Usúario e sala devem ser preenchidos!");
 
-        socket.connect();
-        socket.emit("entrar", {username, senha}, ({status, message}) => {
-            if(status) {
-                navigate("/chat", {state: {username}});
-            } else {
-                toast(message);
-            }
-        })
+        context.axios.post("/entrar", {username, senha})
+            .then((res) => {
+                if(res.data.status) {
+                    document.cookie = `token=${res.data.token}`
+                    navigate("/chat", {state: {username}});
+                } else {
+                    toast(res.data.message);
+                }
+            })
     }
 
     return (
@@ -49,7 +52,8 @@ export const Entrar = () => {
                 </label>
                 <label className="animate__animated animate__bounceInRight">
                     <img src={lock} alt="Cadeado"/>
-                    <input type="password" placeholder="Senha" value={senha} onChange={handleSenha} required autoComplete="on" minLength="6"/>
+                    <input type="password" placeholder="Senha" value={senha} onChange={handleSenha} required
+                           autoComplete="on" minLength="6"/>
                 </label>
                 <input className="animate__animated animate__bounceInUp" type="submit" value="Entrar"/>
 

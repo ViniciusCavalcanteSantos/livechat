@@ -1,58 +1,82 @@
+const corsOptions = {credentials: true, origin: "http://localhost:3000"};
+
 const express = require("express");
 const app = express();
 const server = require("http").createServer(app);
 const cors = require("cors");
-const io = (require("socket.io"))(server, {cors: {origin: "http://localhost:3000"}});
+const io = (require("socket.io"))(server, {cors: corsOptions});
+const cookieParser = require('cookie-parser');
 const user = require("./models/user");
-
-app.use(cors());
-
-// SESSÂO
 const session = require("express-session");
-const sessionMiddleware = session({
-  secret: "SEU-CODIGO-SECRETO",
-  resave: false,
-  saveUninitialized: false
-});
+const MySQLStore = require("express-mysql-session")(session);
 
-// EXPRESS
-app.use(sessionMiddleware);
-app.post("/criar-conta", async (req, res) => {
-  res.send(result);
-});
+app.use(cors(corsOptions));
+app.use(express.json());
+app.use(cookieParser());
 
-// SOCKET.IO SESSION MIDDLEWARE
-io.use((socket, next) => {
-  sessionMiddleware(socket.request, {}, next);
-});
+(async() => {
+    const sessionStore = new MySQLStore({
+        createDatabaseTable: true,
+        expiration: 60000 * 60 * 24,
+    }, await require("./models/db").connect());
 
-// SOCKET.IO
-io.on("connection", (socket) => {
+    const sessionMiddleware = session({
+        secret: "minha-chave-secreta",
+        resave: false,
+        saveUninitialized: false,
+        cookie: {
+            maxAge: 60000 * 60 * 24, // Tempo limite da sessão em milissegundos (1 Dia)
+            secure: false, // Defina como 'true' se estiver usando HTTPS
+            httpOnly: true, // Impede que o cookie seja acessado por JavaScript no cliente
+        },
+        store: sessionStore
+    });
 
-  socket.use((packet, next) => {
-      socket.event = packet[0];
-      user.requireAuthentication(socket, next);
-  });
+    // SESSION MIDDLEWARE
+    app.use(sessionMiddleware);
+    io.engine.use(sessionMiddleware);
 
-  // LOGIN E CADASTRO DO USUÁRIO
-  socket.on("entrar", async ({username, senha}, callback) => {
-    const result = await user.entrar(username, senha);
-    socket.request.session.authenticated = true;
-    socket.request.session.user = result.user;
+    app.post('/entrar', async(req, res) => {
+        const result = await user.entrar(req.body.username, req.body.senha);
+        if(result.status) {
+            req.session.authenticated = true;
+            req.session.user = result.user;
+            req.session.save();
+        }
 
-    callback({status: result.status, message: result.message});
-  });
+        res.json({status: result.status, message: result.message});
+    });
 
-  socket.on("criar-conta", async ({username, senha}, callback) => {
-    const result = await user.criarConta(username, senha);
+    app.post('/cadastrar', async(req, res) => {
+        const result = await user.criarConta(req.body.username, req.body.senha);
 
-    callback(result);
-  });
+        res.json({status: result.status, message: result.message});
+    });
 
-  socket.on("disconnect", () => console.log("Usuário disconectado"))
-})
+    // SOCKET.IO CONEXÃO
+    io.on("connection", (socket) => {
+        console.log("Usuário conectado.");
+        const session = socket.request.session;
 
-const PORT = 4000;
-server.listen(PORT, () => {
-  console.log("Ouvindo na porta: " + PORT);
-})
+        socket.use((packet, next) => {
+            socket.event = packet[0];
+            user.requireAuthentication(socket, next);
+        });
+
+        // OUTRAS AÇÔES
+        socket.on("isAuthorized", (args, callback) => {
+            if(session.authenticated) {
+                callback({status: true, username: session.username});
+            }
+
+            callback({status: false});
+        });
+
+        socket.on("disconnect", () => console.log("Usuário disconectado"));
+    })
+
+    const PORT = 4000;
+    server.listen(PORT, () => {
+        console.log("Ouvindo na porta: " + PORT);
+    })
+})();
