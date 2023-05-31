@@ -1,0 +1,118 @@
+.background-fullscreen-chat {
+  height: 100%;
+  width: 100%;
+  background: #181818;
+  display: flex;
+}
+
+.background-fullscreen-chat aside {
+  display: flex;
+  flex-direction: column;
+  gap: 35px;
+  position: absolute;
+  width: 425px;
+  height: 100%;
+  color: #f9f9f9;
+  padding: 50px 25px;
+  border-right: 1px solid #2A2A2A;
+}
+
+.background-fullscreen-chat main {
+  flex-grow: 1;
+  margin-left: 250px;
+}
+
+.background-fullscreen-chat .title {
+  font-size: 1.25rem;
+  font-weight: 500;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.background-fullscreen-chat .subtitle {
+  font-size: .75rem;
+  font-weight: 700;
+  font-family: 'Montserrat', sans-serif;
+  text-transform: uppercase;
+}
+
+.input-search {
+  max-width: 356px;
+  background: #323232;
+  border: 1px solid #3E3E3E;
+  padding: 12px;
+  border-radius: 9999px;
+}
+
+.input-search svg {
+  color: #55A99D;
+}
+
+.input-search input {
+  background: transparent;
+  border: none;
+  outline: none;
+  padding: 0 12px;
+  color: rgba(228, 228, 228, 0.83);
+}
+
+.input-search input::placeholder {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+  color: rgba(228, 228, 228, 0.83);
+
+}
+
+.friends {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.friends .friend {
+  display: flex;
+  gap: 16px;
+}
+
+.friends .friend figure {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 58px;
+  height: 58px;
+  background: transparent;
+  border: 1.5px solid #55A99D;
+  border-radius: 50%;
+}
+
+.friends .friend img {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.friends .friend .info {
+  flex-grow: 1;
+}
+
+.friends .friend h4 {
+  display: flex;
+  justify-content: space-between;
+  font-size: 1.175rem;
+  font-weight: 500;
+  line-height: 27px;
+}
+
+.friends .friend h4 span {
+  font-weight: 400;
+  font-size: 14px;
+  color: #C5BDBD;
+}
+
+.friends .friend p {
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 24px;
+  color: #9C9797;
+}
