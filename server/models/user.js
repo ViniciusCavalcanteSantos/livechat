@@ -74,4 +74,16 @@ async function criarConta(username, senha) {
     }
 }
 
-module.exports = {entrar, criarConta, requireAuthentication}
+async function getContactsOf(username) {
+    const connection = await db.connect();
+
+    try {
+        const contacts = await connection.execute("SELECT * FROM user WHERE username != ?", [username]);
+
+        return {status: true, contacts: contacts[0]};
+    } catch(err) {
+        return {status: false, message: "Não foi possivel obter seus contatos."};
+    }
+}
+
+module.exports = {entrar, criarConta, requireAuthentication, getContactsOf}

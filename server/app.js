@@ -64,6 +64,12 @@ app.use(cookieParser());
         });
 
         // OUTRAS AÇÔES
+        socket.on("getContacts", async (callback) => {
+            const contacts = await user.getContactsOf(session.user.username);
+            callback(contacts);
+        });
+
+        // OUTRAS AÇÔES
         socket.on("isAuthorized", (args, callback) => {
             if(session.authenticated) {
                 callback({status: true, username: session.username});
