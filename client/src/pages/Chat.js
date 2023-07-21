@@ -32,14 +32,16 @@ export const Chat = () => {
     const friends = friendsFakeData.map((friend) => {
         return (
             <li key={friend.username} className="friend">
-                <figure>
-                    <img
-                        src={friend.perfil}
-                        alt="Foto de perfil"/>
-                </figure>
-                <div className="info">
-                    <h4>{friend.username} <span>27 mar</span></h4>
-                    <p>Hi, David. Hope you’re doing....</p>
+                <div className="container">
+                    <figure>
+                        <img
+                            src={friend.perfil}
+                            alt="Foto de perfil"/>
+                    </figure>
+                    <div className="info">
+                        <h4>{friend.username} <span>27 mar</span></h4>
+                        <p>Hi, David. Hope you’re doing....</p>
+                    </div>
                 </div>
             </li>
         );
@@ -47,15 +49,17 @@ export const Chat = () => {
     return (
         <section className="background-fullscreen-chat">
             <aside>
-                <h2 className="title">Chat</h2>
-                <label className="input-search">
-                    <FontAwesomeIcon icon={faMagnifyingGlass}/>
+                <div className="padding">
+                    <h2 className="title">Chat</h2>
+                    <label className="input-search">
+                        <FontAwesomeIcon icon={faMagnifyingGlass}/>
 
-                    <input type="text" placeholder="Pesquise aqui"/>
-                </label>
+                        <input type="text" placeholder="Pesquise aqui"/>
+                    </label>
 
-                <h2 className="title">Mensagens</h2>
-                <h3 className="subtitle">Chat recente</h3>
+                    <h2 className="title">Mensagens</h2>
+                    <h3 className="subtitle">Chat recente</h3>
+                </div>
 
                 <ul className="friends">
                     {friends}
