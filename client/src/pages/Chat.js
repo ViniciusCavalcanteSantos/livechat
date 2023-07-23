@@ -5,11 +5,13 @@ import {useContext, useEffect, useState} from "react";
 import GlobalContext from "../helpers/globalContext";
 
 import perfilMasculino from "../assets/perfil-masculino.png";
+import perfilFeminino from "../assets/perfil-feminino.png";
 
 export const Chat = () => {
     const context = useContext(GlobalContext);
     const [contacts, setContacts] = useState([]);
 
+    // CARREGA OS CONTATOS
     useEffect(() => {
         const socket = context.socket;
         socket.emit("getContacts", (data) => {
@@ -56,7 +58,31 @@ export const Chat = () => {
             </aside>
 
             <main>
+                <div className="user-info"></div>
 
+                <ul className="mensagens">
+                    <li className="mensagens-right">
+                        <img src={perfilMasculino} alt=""/>
+
+                        <div>
+                            <p>OoOo, Thats so Cool!</p>
+                            <p>OoOo, Thats so Cool!</p>
+                            <p>OoOo, Thats so Cool!</p>
+                            <p>OoOo, Thats so Cool!</p>
+                            <p>OoOo, Thats so Cool!</p>
+                            <p>OoOo, Thats so Cool!</p>
+                        </div>
+                    </li>
+
+                    <li className="mensagens-left">
+                        <img src={perfilFeminino} alt=""/>
+
+                        <div>
+                            <p>Yes, i’m at Istanbul.. </p>
+                            <p>OoOo, Thats so Cool!</p>
+                        </div>
+                    </li>
+                </ul>
             </main>
         </section>
     );

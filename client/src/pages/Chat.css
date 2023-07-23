@@ -132,3 +132,55 @@
   line-height: 24px;
   color: #9C9797;
 }
+
+.mensagens {
+  display: flex;
+  flex-direction: column;
+  padding: 50px 30px;
+}
+
+.mensagens li {
+  display: flex;
+  align-items: flex-end;
+}
+
+.mensagens li.mensagens-right {
+
+}
+
+
+.mensagens li img {
+  width: 50px;
+  height: 50px;
+  margin-right: 20px;
+}
+
+.mensagens li div {
+  display: grid;
+  gap: 10px;
+}
+
+.mensagens li div p {
+  height: fit-content;
+  padding: 8px 11px;
+  background: rgba(42, 42, 42, 0.83);
+  color: #9C9797;
+  border-radius: 20px 20px 20px 0;
+}
+
+.mensagens li.mensagens-left {
+  display: flex;
+  flex-direction: row-reverse;
+  align-self: flex-end;
+}
+
+.mensagens li.mensagens-left img {
+  margin-right: 0;
+  margin-left: 20px;
+}
+
+.mensagens li.mensagens-left div p {
+  background: rgba(85, 169, 157, 0.30);
+  color: #55A99D;
+  border-radius: 20px 20px 0 20px;
+}
