@@ -6,14 +6,17 @@ const server = require("http").createServer(app);
 const cors = require("cors");
 const io = (require("socket.io"))(server, {cors: corsOptions});
 const cookieParser = require('cookie-parser');
+
+// MODELS
 const user = require("./models/user");
+const messageModel = require("./models/message");
+
+// SESSION
 const session = require("express-session");
 const MySQLStore = require("express-mysql-session")(session);
-
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(cookieParser());
-
 (async() => {
     const sessionStore = new MySQLStore({
         createDatabaseTable: true,
@@ -63,9 +66,14 @@ app.use(cookieParser());
             user.requireAuthentication(socket, next);
         });
 
-        // OUTRAS AÇÔES
+        // PRICIPAIS AÇÔES
         socket.on("getContacts", async (callback) => {
             const contacts = await user.getContactsOf(session.user.username);
+            callback(contacts);
+        });
+
+        socket.on("sendMessage", async ({message, to}, callback) => {
+            const contacts = await messageModel.sendMessage(message, session.user.id, to);
             callback(contacts);
         });
 

@@ -9,11 +9,12 @@ import perfilFeminino from "../assets/perfil-feminino.png";
 
 export const Chat = () => {
     const context = useContext(GlobalContext);
+    const socket = context.socket;
+    const [message, setMessage] = useState("");
     const [contacts, setContacts] = useState([]);
 
     // CARREGA OS CONTATOS
     useEffect(() => {
-        const socket = context.socket;
         socket.emit("getContacts", (data) => {
             const contacts = data.contacts.map((contact) => {
                 return (
@@ -36,6 +37,14 @@ export const Chat = () => {
             setContacts(contacts);
         });
     }, [])
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        socket.emit("sendMessage", {message: message, to: 2}, (result) => {
+            console.log(result);
+        })
+        setMessage("");
+    }
 
     return (
         <section className="background-fullscreen-chat">
@@ -85,8 +94,9 @@ export const Chat = () => {
                 </ul>
 
                 <div className="mensagens-input">
-                    <form>
-                        <input type="text" placeholder="Send message"/>
+                    <form onSubmit={handleSubmit}>
+                        <input type="text" placeholder="Send message" value={message}
+                               onChange={(e) => setMessage(e.target.value)}/>
 
                         <button type="submit">
                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18"
