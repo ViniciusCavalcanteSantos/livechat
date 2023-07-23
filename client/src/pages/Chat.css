@@ -133,9 +133,15 @@
   color: #9C9797;
 }
 
+.conversa {
+  display: flex;
+  flex-direction: column;
+}
+
 .mensagens {
   display: flex;
   flex-direction: column;
+  flex: 1;
   padding: 50px 30px;
 }
 
@@ -143,11 +149,6 @@
   display: flex;
   align-items: flex-end;
 }
-
-.mensagens li.mensagens-right {
-
-}
-
 
 .mensagens li img {
   width: 50px;
@@ -183,4 +184,40 @@
   background: rgba(85, 169, 157, 0.30);
   color: #55A99D;
   border-radius: 20px 20px 0 20px;
+}
+
+.mensagens-input {
+  border-top: 1px solid #2A2A2A;
+  padding: 15px 30px;
+}
+
+.mensagens-input form {
+  display: flex;
+  align-items: center;
+}
+
+.mensagens-input input[type="text"] {
+  font-size: 1rem;
+  color: #9C9797;
+  font-family: 'Poppins', sans-serif;
+  background: transparent;
+  outline: none;
+  border: none;
+  flex: 1;
+}
+
+.mensagens-input input[type="text"]::placeholder {
+  color: #E4E4E4;
+  font-family: 'Poppins', sans-serif;
+  font-size: 1rem;
+}
+
+.mensagens-input button {
+  width: 18px;
+  height: 18px;
+  margin-left: 25px;
+  background: transparent;
+  outline: none;
+  border: none;
+  cursor: pointer;
 }
