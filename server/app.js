@@ -77,9 +77,13 @@ app.use(cookieParser());
         });
 
         socket.on("sendMessage", async ({message, to}, callback) => {
+            const userTo = await user.getUser(to);
+            if(!userTo) {
+                return callback({status: false});
+            }
+
             const contacts = await messageModel.sendMessage(message, session.user.id, to);
 
-            const userTo = await user.getUser(to);
             socket.to(userTo.username).emit("sendMessage", {id: session.user.id, message: message});
             callback({username: session.user.username, message: message})
         });

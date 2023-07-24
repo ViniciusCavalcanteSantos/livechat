@@ -6,6 +6,7 @@ import GlobalContext from "../helpers/globalContext";
 
 import perfilMasculino from "../assets/perfil-masculino.png";
 import perfilFeminino from "../assets/perfil-feminino.png";
+import {toast} from "react-toastify";
 
 export const Chat = () => {
     const myId = localStorage.getItem("id");
@@ -66,7 +67,13 @@ export const Chat = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        socket.emit("sendMessage", {message: message, to: currentUser}, ({username, message}) => {
+        socket.emit("sendMessage", {message: message, to: currentUser}, ({status, message}) => {
+            console.log(status)
+            if(!status) {
+                toast("Não foi possível enviar a mensagem.")
+                return;
+            }
+
             setMessages((prevState) => [...prevState, {id_from: myId, message}]);
         })
         setMessage("");
@@ -92,7 +99,7 @@ export const Chat = () => {
                 </ul>
             </aside>
 
-            <main className="conversa">
+            {currentUser && <main className="conversa">
                 <div className="user-info"></div>
 
                 <ul className="mensagens">
@@ -125,7 +132,7 @@ export const Chat = () => {
                         </button>
                     </form>
                 </div>
-            </main>
+            </main>}
         </section>
     );
 }//6F727A
