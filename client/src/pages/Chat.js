@@ -1,7 +1,7 @@
 import "./Chat.css";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faMagnifyingGlass} from '@fortawesome/free-solid-svg-icons'
-import {useContext, useEffect, useState} from "react";
+import {useContext, useEffect, useRef, useState} from "react";
 import GlobalContext from "../helpers/globalContext";
 
 import perfilMasculino from "../assets/perfil-masculino.png";
@@ -65,6 +65,14 @@ export const Chat = () => {
         }
     }, [])
 
+    const messagesEndRef = useRef(null)
+    const scrollToBottom = () => {
+        messagesEndRef.current?.scrollIntoView({behavior: "smooth"})
+    }
+    useEffect(() => {
+        scrollToBottom();
+    }, [messages])
+
     const handleSubmit = (e) => {
         e.preventDefault();
         socket.emit("sendMessage", {message: message, to: currentUser}, ({status, message}) => {
@@ -114,6 +122,7 @@ export const Chat = () => {
                             </li>
                         )
                     })}
+                    <div ref={messagesEndRef}/>
                 </ul>
 
                 <div className="mensagens-input">
