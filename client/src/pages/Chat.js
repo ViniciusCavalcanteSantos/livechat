@@ -36,12 +36,20 @@ export const Chat = () => {
 
             setContacts(contacts);
         });
+
+        socket.on("sendMessage", ({username, message}) => {
+            console.log("Recebe uma mensagem de algum usuário");
+        })
+
+        return () => {
+            socket.removeAllListeners("sendMessage");
+        }
     }, [])
 
     const handleSubmit = (e) => {
         e.preventDefault();
         socket.emit("sendMessage", {message: message, to: 2}, (result) => {
-            console.log(result);
+            console.log("Recebe sua propria mensagem caso tenha sido enviada com sucesso.");
         })
         setMessage("");
     }

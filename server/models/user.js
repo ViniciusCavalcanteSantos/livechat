@@ -8,9 +8,10 @@ const bcrypt = require("bcrypt");
  * @param next
  */
 function requireAuthentication(socket, next) {
-    if(socket.event === "entrar" || socket.event === "criar-conta" || socket.event === "isAuthorized") {
+    if(socket.event === "isAuthorized") {
         next();
     } else if(socket.request.session.authenticated) {
+        socket.join(socket.request.session.user.username);
         next();
     } else {
         socket.emit("unauthorized");
@@ -86,4 +87,14 @@ async function getContactsOf(username) {
     }
 }
 
-module.exports = {entrar, criarConta, requireAuthentication, getContactsOf}
+async function getUser(id) {
+    const connection = await db.connect();
+
+    try {
+        return (await connection.execute("SELECT * FROM user WHERE id = ? LIMIT 1", [id]))[0][0];
+    } catch(err) {
+        return null;
+    }
+}
+
+module.exports = {entrar, criarConta, getUser, requireAuthentication, getContactsOf}

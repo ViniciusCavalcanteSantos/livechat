@@ -22,7 +22,6 @@ app.use(cookieParser());
         createDatabaseTable: true,
         expiration: 60000 * 60 * 24,
     }, await require("./models/db").connect());
-
     const sessionMiddleware = session({
         secret: "minha-chave-secreta",
         resave: false,
@@ -74,7 +73,9 @@ app.use(cookieParser());
 
         socket.on("sendMessage", async ({message, to}, callback) => {
             const contacts = await messageModel.sendMessage(message, session.user.id, to);
-            callback(contacts);
+
+            const userTo = await user.getUser(to);
+            socket.to(userTo.username).emit("sendMessage", {username: session.user.username, message: message});
         });
 
         // OUTRAS AÇÔES
