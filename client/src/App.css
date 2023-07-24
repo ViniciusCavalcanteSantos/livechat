@@ -45,3 +45,20 @@ a {
 img {
   width: 100%;
 }
+
+/* Estilizando a scrollbar */
+::-webkit-scrollbar {
+  width: 8px; /* Largura da scrollbar */
+  background-color: #181818; /* Cor de fundo */
+}
+
+/* Estilizando o thumb (a alça) da scrollbar */
+::-webkit-scrollbar-thumb {
+  background-color: #666; /* Cor do thumb */
+  border-radius: 4px; /* Borda arredondada */
+}
+
+/* Opcional: Estilizando a scrollbar quando o mouse passa por cima dela */
+::-webkit-scrollbar-thumb:hover {
+  background-color: #999; /* Cor do thumb ao passar o mouse por cima */
+}

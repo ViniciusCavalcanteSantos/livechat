@@ -148,11 +148,13 @@
   flex-direction: column;
   flex: 1;
   padding: 50px 30px;
+  overflow-y: scroll;
 }
 
 .mensagens li {
   display: flex;
   align-items: flex-end;
+  margin: 6px 0;
 }
 
 .mensagens li img {

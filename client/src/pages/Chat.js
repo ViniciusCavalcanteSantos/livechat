@@ -68,8 +68,7 @@ export const Chat = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         socket.emit("sendMessage", {message: message, to: currentUser}, ({status, message}) => {
-            console.log(status)
-            if(!status) {
+            if(status === false) {
                 toast("Não foi possível enviar a mensagem.")
                 return;
             }
