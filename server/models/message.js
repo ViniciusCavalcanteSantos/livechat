@@ -13,4 +13,20 @@ async function sendMessage(message, idFrom, idTo) {
     }
 }
 
-module.exports = {sendMessage}
+async function getMessagesOf(idFrom, idTo) {
+    console.log(idFrom)
+    console.log(idTo)
+
+    const connection = await db.connect();
+    try {
+        const result = await connection.execute(
+            "SELECT * FROM message WHERE (id_from = ? AND id_to = ?) OR (id_from = ? AND id_to = ?)",
+            [idFrom, idTo, idTo, idFrom]);
+
+        return {status: true, result: result};
+    } catch(err) {
+        return {status: false, message: "Não foi possivel enviar sua mensagem."};
+    }
+}
+
+module.exports = {sendMessage, getMessagesOf}

@@ -6,19 +6,33 @@ import GlobalContext from "../helpers/globalContext";
 
 import perfilMasculino from "../assets/perfil-masculino.png";
 import perfilFeminino from "../assets/perfil-feminino.png";
+import {useLocation} from "react-router-dom";
 
 export const Chat = () => {
+    const location = useLocation();
     const context = useContext(GlobalContext);
     const socket = context.socket;
+
+    const [currentUser, setCurrentUser] = useState("");
     const [message, setMessage] = useState("");
+    const [messages, setMessages] = useState([]);
     const [contacts, setContacts] = useState([]);
+
+    const handleContactChange = ({id, username}) => {
+        setCurrentUser(id);
+        setMessages([]);
+        socket.emit("getMessages", {userId: id}, (messages) => {
+            console.log(messages)
+        })
+    }
 
     // CARREGA OS CONTATOS
     useEffect(() => {
         socket.emit("getContacts", (data) => {
             const contacts = data.contacts.map((contact) => {
                 return (
-                    <li key={contact.username} className="friend">
+                    <li key={contact.username} className="friend"
+                        onClick={() => handleContactChange({id: contact.id, username: contact.username})}>
                         <div className="container">
                             <figure>
                                 <img
@@ -38,7 +52,7 @@ export const Chat = () => {
         });
 
         socket.on("sendMessage", ({username, message}) => {
-            console.log("Recebe uma mensagem de algum usuário");
+            setMessages((prevState) => [...prevState, {username, message}]);
         })
 
         return () => {
@@ -48,8 +62,8 @@ export const Chat = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        socket.emit("sendMessage", {message: message, to: 2}, (result) => {
-            console.log("Recebe sua propria mensagem caso tenha sido enviada com sucesso.");
+        socket.emit("sendMessage", {message: message, to: currentUser}, ({username, message}) => {
+            setMessages((prevState) => [...prevState, {username, message}]);
         })
         setMessage("");
     }
@@ -78,27 +92,19 @@ export const Chat = () => {
                 <div className="user-info"></div>
 
                 <ul className="mensagens">
-                    <li className="mensagens-right">
-                        <img src={perfilMasculino} alt=""/>
+                    {messages.map((message, index) => {
 
-                        <div>
-                            <p>OoOo, Thats so Cool!</p>
-                            <p>OoOo, Thats so Cool!</p>
-                            <p>OoOo, Thats so Cool!</p>
-                            <p>OoOo, Thats so Cool!</p>
-                            <p>OoOo, Thats so Cool!</p>
-                            <p>OoOo, Thats so Cool!</p>
-                        </div>
-                    </li>
+                        return (
+                            <li key={index}
+                                className={(location.state.username === message.username) ? "mensagens-left" : ""}>
+                                <img src={perfilMasculino} alt=""/>
 
-                    <li className="mensagens-left">
-                        <img src={perfilFeminino} alt=""/>
-
-                        <div>
-                            <p>Yes, i’m at Istanbul.. </p>
-                            <p>OoOo, Thats so Cool!</p>
-                        </div>
-                    </li>
+                                <div>
+                                    <p>{message.message}</p>
+                                </div>
+                            </li>
+                        )
+                    })}
                 </ul>
 
                 <div className="mensagens-input">
