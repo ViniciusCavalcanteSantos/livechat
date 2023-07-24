@@ -34,6 +34,9 @@ export const Entrar = () => {
             .then((res) => {
                 if(res.data.status) {
                     document.cookie = `token=${res.data.token}`
+
+                    localStorage.setItem("id", res.data.user.id);
+                    localStorage.setItem("username", res.data.user.username);
                     navigate("/chat", {state: {username}});
                 } else {
                     toast(res.data.message);

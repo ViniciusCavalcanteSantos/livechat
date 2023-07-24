@@ -46,7 +46,7 @@ app.use(cookieParser());
             req.session.save();
         }
 
-        res.json({status: result.status, message: result.message});
+        res.json({status: result.status, message: result.message, user: {id: result.user.id, username: result.user.username}});
     });
 
     app.post('/cadastrar', async(req, res) => {
