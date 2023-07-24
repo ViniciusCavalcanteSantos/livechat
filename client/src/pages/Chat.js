@@ -6,10 +6,11 @@ import GlobalContext from "../helpers/globalContext";
 
 import perfilMasculino from "../assets/perfil-masculino.png";
 import perfilFeminino from "../assets/perfil-feminino.png";
-import {useLocation} from "react-router-dom";
 
 export const Chat = () => {
-    const location = useLocation();
+    const myId = localStorage.getItem("id");
+    const myUsername = localStorage.getItem("id");
+
     const context = useContext(GlobalContext);
     const socket = context.socket;
 
@@ -22,7 +23,7 @@ export const Chat = () => {
         setCurrentUser(id);
         setMessages([]);
         socket.emit("getMessages", {userId: id}, (messages) => {
-            console.log(messages)
+            setMessages(messages.result);
         })
     }
 
@@ -31,7 +32,7 @@ export const Chat = () => {
         socket.emit("getContacts", (data) => {
             const contacts = data.contacts.map((contact) => {
                 return (
-                    <li key={contact.username} className="friend"
+                    <li key={contact.username} className={"friend " + ((currentUser === contact.id) ? "active" : "")}
                         onClick={() => handleContactChange({id: contact.id, username: contact.username})}>
                         <div className="container">
                             <figure>
@@ -50,9 +51,12 @@ export const Chat = () => {
 
             setContacts(contacts);
         });
+    }, [currentUser])
 
-        socket.on("sendMessage", ({username, message}) => {
-            setMessages((prevState) => [...prevState, {username, message}]);
+    // RECEBER MENSAGENS
+    useEffect(() => {
+        socket.on("sendMessage", ({id, message}) => {
+            setMessages((prevState) => [...prevState, {id_from: id, message}]);
         })
 
         return () => {
@@ -63,7 +67,7 @@ export const Chat = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         socket.emit("sendMessage", {message: message, to: currentUser}, ({username, message}) => {
-            setMessages((prevState) => [...prevState, {username, message}]);
+            setMessages((prevState) => [...prevState, {id_from: myId, message}]);
         })
         setMessage("");
     }
@@ -93,10 +97,9 @@ export const Chat = () => {
 
                 <ul className="mensagens">
                     {messages.map((message, index) => {
-
                         return (
                             <li key={index}
-                                className={(location.state.username === message.username) ? "mensagens-left" : ""}>
+                                className={(myId == message.id_from) ? "mensagens-left" : ""}>
                                 <img src={perfilMasculino} alt=""/>
 
                                 <div>

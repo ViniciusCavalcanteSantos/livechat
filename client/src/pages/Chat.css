@@ -85,6 +85,11 @@
   filter: brightness(80%);
 }
 
+.friends .friend.active {
+  background: rgba(42, 42, 42, 0.9);
+  filter: brightness(100%);
+}
+
 .friend .container {
   display: flex;
   gap: 16px;

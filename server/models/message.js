@@ -23,7 +23,7 @@ async function getMessagesOf(idFrom, idTo) {
             "SELECT * FROM message WHERE (id_from = ? AND id_to = ?) OR (id_from = ? AND id_to = ?)",
             [idFrom, idTo, idTo, idFrom]);
 
-        return {status: true, result: result};
+        return {status: true, result: result[0]};
     } catch(err) {
         return {status: false, message: "Não foi possivel enviar sua mensagem."};
     }
