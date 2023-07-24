@@ -43,7 +43,7 @@ export const Chat = () => {
                             </figure>
                             <div className="info">
                                 <h4>{contact.username} <span>27 mar</span></h4>
-                                <p>Hi, David. Hope you’re doing....</p>
+                                <p>{contact.last_message}</p>
                             </div>
                         </div>
                     </li>

@@ -79,7 +79,18 @@ async function getContactsOf(username) {
     const connection = await db.connect();
 
     try {
-        const contacts = await connection.execute("SELECT * FROM user WHERE username != ?", [username]);
+        const contacts = await connection.execute(`
+            SELECT u.id, u.username, m.message AS last_message, m.created_at AS last_message_created_at
+            FROM user u
+            LEFT JOIN message m ON u.id = m.id_from OR u.id = m.id_to
+            WHERE u.username <> ? AND (m.id IS NULL OR m.id = (
+                SELECT id
+                FROM message
+                WHERE id_from = u.id OR id_to = u.id
+                ORDER BY created_at DESC
+                LIMIT 1
+        )) ORDER BY last_message_created_at DESC
+        `, [username]);
 
         return {status: true, contacts: contacts[0]};
     } catch(err) {
