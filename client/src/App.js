@@ -15,7 +15,7 @@ const api = axios.create({
     withCredentials: true
 })
 
-function App(props) {
+function App() {
     const location = useLocation();
     const navigate = useNavigate();
 
@@ -25,10 +25,17 @@ function App(props) {
 
             if((path === "/" || path === "cadastrar") && status) {
                 navigate("/chat", {state: {username}});
-            } else if(!status) {
-                navigate("/");
             }
         });
+
+        socket.on("unauthorized", () => {
+            console.log("Não autorizado")
+            navigate("/")
+        })
+
+        return () => {
+            socket.removeAllListeners("unauthorized");
+        }
     }, [])
 
 
