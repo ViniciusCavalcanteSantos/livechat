@@ -44,9 +44,11 @@ app.use(cookieParser());
             req.session.authenticated = true;
             req.session.user = result.user;
             req.session.save();
-        }
 
-        res.json({status: result.status, message: result.message, user: {id: result.user.id, username: result.user.username}});
+            res.json({status: result.status, message: result.message, user: {id: result.user.id, username: result.user.username}});
+        } else {
+            res.json({status: result.status, message: result.message});
+        }
     });
 
     app.post('/cadastrar', async(req, res) => {
@@ -58,7 +60,15 @@ app.use(cookieParser());
     // SOCKET.IO CONEXÃO
     io.on("connection", (socket) => {
         console.log("Usuário conectado.");
-        const session = socket.request.session;
+        let session = socket.request.session;
+        socket.on("updateSession", () => {
+            console.log("updated")
+            socket.request.session.reload(function(something) {
+                session = socket.request.session;
+                console.log(something)
+                console.log(session)
+            })
+        })
 
         socket.use((packet, next) => {
             socket.event = packet[0];

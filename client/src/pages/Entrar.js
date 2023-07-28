@@ -34,6 +34,7 @@ export const Entrar = () => {
             .then((res) => {
                 if(res.data.status) {
                     document.cookie = `token=${res.data.token}`
+                    context.socket.emit("updateSession");
 
                     localStorage.setItem("id", res.data.user.id);
                     localStorage.setItem("username", res.data.user.username);
