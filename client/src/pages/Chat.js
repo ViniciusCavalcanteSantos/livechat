@@ -8,6 +8,20 @@ import perfilMasculino from "../assets/perfil-masculino.png";
 import perfilFeminino from "../assets/perfil-feminino.png";
 import {toast} from "react-toastify";
 
+function formatDate(datetime) {
+    const months = [
+      'jan', 'fev', 'mar', 'abr', 'mai', 'jun',
+      'jul', 'ago', 'set', 'out', 'nov', 'dez'
+    ];
+  
+    const date = new Date(datetime);
+  
+    const day = date.getDate();
+    const month = months[date.getMonth()];
+  
+    return `${day} ${month}`;
+}
+
 export const Chat = () => {
     const myId = localStorage.getItem("id");
     const myUsername = localStorage.getItem("id");
@@ -100,7 +114,7 @@ export const Chat = () => {
                                             alt="Foto de perfil"/>
                                     </figure>
                                     <div className="info">
-                                        <h4>{contact.username} <span>27 mar</span></h4>
+                                        <h4>{contact.username} <span>{contact.last_message ? formatDate(contact.last_message_created_at) : ""}</span></h4>
                                         <p>{(contact.last_message && contact.last_message.length > 60) ? contact.last_message.substring(0, 60) + "..." : contact.last_message}</p>
                                     </div>
                                 </div>
