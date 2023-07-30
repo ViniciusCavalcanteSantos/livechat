@@ -15,6 +15,7 @@ export const Chat = () => {
     const context = useContext(GlobalContext);
     const socket = context.socket;
 
+    const [search, setSearch] = useState("");
     const [currentUser, setCurrentUser] = useState("");
     const [message, setMessage] = useState("");
     const [messages, setMessages] = useState([]);
@@ -31,30 +32,12 @@ export const Chat = () => {
     // CARREGA OS CONTATOS
     useEffect(() => {
         socket.emit("getContacts", (data) => {
-            const contacts = data.contacts.map((contact) => {
-                return (
-                    <li key={contact.username} className={"friend " + ((currentUser === contact.id) ? "active" : "")}
-                        onClick={() => handleContactChange({id: contact.id, username: contact.username})}>
-                        <div className="container">
-                            <figure>
-                                <img
-                                    src={perfilMasculino}
-                                    alt="Foto de perfil"/>
-                            </figure>
-                            <div className="info">
-                                <h4>{contact.username} <span>27 mar</span></h4>
-                                <p>{(contact.last_message && contact.last_message.length > 60) ? contact.last_message.substring(0, 60) + "..." : contact.last_message}</p>
-                            </div>
-                        </div>
-                    </li>
-                );
-            })
-
+            const contacts = data.contacts
             setContacts(contacts);
         });
-    }, [currentUser])
+    }, [currentUser]);
 
-    // RECEBER MENSAGENS
+    // RECEBE MENSAGENS
     useEffect(() => {
         socket.on("sendMessage", ({id, message}) => {
             setMessages((prevState) => [...prevState, {id_from: id, message}]);
@@ -65,14 +48,7 @@ export const Chat = () => {
         }
     }, [])
 
-    const messagesEndRef = useRef(null)
-    const scrollToBottom = () => {
-        messagesEndRef.current?.scrollIntoView({behavior: "smooth"})
-    }
-    useEffect(() => {
-        scrollToBottom();
-    }, [messages])
-
+    // ENVIA MENSAGENS
     const handleSubmit = (e) => {
         e.preventDefault();
         socket.emit("sendMessage", {message: message, to: currentUser}, ({status, message}) => {
@@ -86,6 +62,15 @@ export const Chat = () => {
         setMessage("");
     }
 
+    // Desce a barra ao selecionar uma conversa
+    const messagesEndRef = useRef(null)
+    const scrollToBottom = () => {
+        messagesEndRef.current?.scrollIntoView({behavior: "smooth"})
+    }
+    useEffect(() => {
+        scrollToBottom();
+    }, [messages])
+
     return (
         <section className="background-fullscreen-chat">
             <aside>
@@ -94,7 +79,7 @@ export const Chat = () => {
                     <label className="input-search">
                         <FontAwesomeIcon icon={faMagnifyingGlass}/>
 
-                        <input type="text" placeholder="Pesquise aqui"/>
+                        <input type="text" placeholder="Pesquise aqui" onChange={(e) => setSearch(e.target.value)} value={search} />
                     </label>
 
                     <h2 className="title">Mensagens</h2>
@@ -102,7 +87,26 @@ export const Chat = () => {
                 </div>
 
                 <ul className="friends">
-                    {contacts}
+                    {contacts.filter((contact) => {
+                        return contact.username.toLowerCase().match(search.toLowerCase());
+                    }).map((contact) => {
+                        return (
+                            <li key={contact.username} className={"friend " + ((currentUser === contact.id) ? "active" : "")}
+                                onClick={() => handleContactChange({id: contact.id, username: contact.username})}>
+                                <div className="container">
+                                    <figure>
+                                        <img
+                                            src={perfilMasculino}
+                                            alt="Foto de perfil"/>
+                                    </figure>
+                                    <div className="info">
+                                        <h4>{contact.username} <span>27 mar</span></h4>
+                                        <p>{(contact.last_message && contact.last_message.length > 60) ? contact.last_message.substring(0, 60) + "..." : contact.last_message}</p>
+                                    </div>
+                                </div>
+                            </li>
+                        );
+                    })}
                 </ul>
             </aside>
 
