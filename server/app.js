@@ -38,6 +38,14 @@ app.use(cookieParser());
     app.use(sessionMiddleware);
     io.engine.use(sessionMiddleware);
 
+    app.get("/isAuthorized", (req, res) => {
+        if(req.session.authenticated) {
+            res.json({status: true, username: req.session.username});
+        } else {
+            res.json({status: false});
+        }
+    });
+
     app.post('/entrar', async(req, res) => {
         const result = await user.entrar(req.body.username, req.body.senha);
         if(result.status) {
@@ -89,14 +97,6 @@ app.use(cookieParser());
         });
 
         // OUTRAS AÇÔES
-        socket.on("isAuthorized", (args, callback) => {
-            if(session.authenticated) {
-                callback({status: true, username: session.username});
-            }
-
-            callback({status: false});
-        });
-
         socket.on("disconnect", () => console.log("Usuário disconectado"));
     })
 

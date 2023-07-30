@@ -9,7 +9,6 @@ import {socket} from "./helpers/socket";
 import axios from "axios";
 import {useEffect} from "react";
 
-socket.connect();
 const api = axios.create({
     baseURL: "http://localhost:4000",
     withCredentials: true
@@ -20,13 +19,23 @@ function App() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        socket.emit("isAuthorized", null, ({status, username}) => {
-            const path = location.pathname;
+        const path = location.pathname;
+        
+        api.get("/isAuthorized")
+                .then((res) => {
 
-            if((path === "/" || path === "cadastrar") && status) {
-                navigate("/chat", {state: {username}});
-            }
-        });
+                    if(res.data.status) {
+                        socket.connect();
+                        if(path === "/" || path === "cadastrar") {
+                            navigate("/chat", {state: {username: res.data.username}});
+                        }
+                    } else {
+                        if(path !== "/" || path !== "cadastrar") {
+                            navigate("/")
+                        }
+                    }
+                })
+
 
         socket.on("unauthorized", () => {
             console.log("Não autorizado")

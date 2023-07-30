@@ -8,9 +8,7 @@ const bcrypt = require("bcrypt");
  * @param next
  */
 function requireAuthentication(socket, next) {
-    if(socket.event === "isAuthorized") {
-        next();
-    } else if(socket.request.session.authenticated) {
+    if(socket.request.session.authenticated) {
         socket.join(socket.request.session.user.username);
         next();
     } else {

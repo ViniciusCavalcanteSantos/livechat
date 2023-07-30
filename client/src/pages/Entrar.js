@@ -37,6 +37,8 @@ export const Entrar = () => {
 
                     localStorage.setItem("id", res.data.user.id);
                     localStorage.setItem("username", res.data.user.username);
+                    context.socket.connect();
+                    
                     navigate("/chat", {state: {username}});
                 } else {
                     toast(res.data.message);
