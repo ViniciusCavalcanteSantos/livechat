@@ -43,7 +43,7 @@ export const Chat = () => {
                             </figure>
                             <div className="info">
                                 <h4>{contact.username} <span>27 mar</span></h4>
-                                <p>{contact.last_message}</p>
+                                <p>{(contact.last_message && contact.last_message.length > 60) ? contact.last_message.substring(0, 60) + "..." : contact.last_message}</p>
                             </div>
                         </div>
                     </li>
@@ -128,7 +128,7 @@ export const Chat = () => {
                 <div className="mensagens-input">
                     <form onSubmit={handleSubmit}>
                         <input type="text" placeholder="Send message" value={message}
-                               onChange={(e) => setMessage(e.target.value)}/>
+                               onChange={(e) => setMessage(e.target.value)} maxLength={1000}/>
 
                         <button type="submit">
                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18"

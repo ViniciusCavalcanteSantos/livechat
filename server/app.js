@@ -85,6 +85,10 @@ app.use(cookieParser());
         });
 
         socket.on("sendMessage", async ({message, to}, callback) => {
+            if(message.length > 1000) {
+                return callback({status: false});
+            }
+
             const userTo = await user.getUser(to);
             if(!userTo) {
                 return callback({status: false});
